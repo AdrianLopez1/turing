@@ -33,3 +33,46 @@ def animate_2d_array(u, interval=100):
 
     plt.close(fig)
     return HTML(ani.to_jshtml())
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from IPython.display import Video
+
+def animate_3d_function_small(u, extent=None, interval=100, cmap="gray", fps=10, filename="animation.mp4", n_skip=10):
+    """
+    Animate a 3D function u(x, y, t) using plt.imshow(), optimized for smaller file size.
+
+    Parameters:
+    u (numpy.ndarray): 3D array where u[:,:,t] represents the function at time t.
+    extent (tuple): Optional (xmin, xmax, ymin, ymax) for axis labeling.
+    interval (int): Time interval (milliseconds) between frames.
+    cmap (str): Colormap for visualization (use "gray" for smaller file size).
+    fps (int): Frames per second for the saved animation.
+    filename (str): Output filename for MP4.
+    """
+    # Set color scale limits globally
+    vmin, vmax = np.min(u), np.max(u)
+    
+    # Plot image
+    fig, ax = plt.subplots()
+    img = ax.imshow(u[:, :, 0], cmap=cmap, origin='lower', 
+                    extent=extent if extent else None, animated=True,
+                    vmin=vmin, vmax=vmax) 
+    fig.colorbar(img, ax=ax)
+
+    def update(t):
+        img.set_array(u[:, :, t])
+        ax.set_title(f"Timestep {t}")
+        return img,
+
+    ani = animation.FuncAnimation(fig, update, frames=range(0, u.shape[2], n_skip),  # Skip every nth frame
+                                  blit=False, interval=interval, repeat=False)
+
+    # Save animation as MP4 (without extra_args)
+    writer = animation.FFMpegWriter(fps=fps)
+    ani.save(filename, writer=writer)
+    
+    plt.close(fig)  # Prevents static image from showing
+
+    return Video(filename)
