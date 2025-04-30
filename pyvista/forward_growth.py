@@ -46,7 +46,7 @@ def grow_forward(mesh, nx, niter, dt, growth_rate=1.0, grow=False, grow_from_rul
                 # pts[:,:,i+1] = pts[:,:,i] 
                 # pts[:,2,i+1] = pts[:,2,i] *  np.random.uniform(1.0, growth_rate, nx) # randomly growing in z direction 
 
-                pts[:,:,i+1] = pts[:,:,0] * growth_rate * dt * (i+1) # uniform additive isotropic growth
+                pts[:,:,i+1] = pts[:,:,0]*(1 + growth_rate * dt * (i+1)) # uniform additive isotropic growth
 
             mesh.points = pts[:,:,i+1]
 
@@ -76,6 +76,8 @@ def grow_forward(mesh, nx, niter, dt, growth_rate=1.0, grow=False, grow_from_rul
 
     # write results to disk
     np.savez_compressed(output_file, pts=pts, laps=laps)
+    
+    print("Growth data written to {}.".format(output_file))
 
     
     
@@ -85,13 +87,6 @@ def rd_forward(du, dv, g, a, b, nx, dx, niter, dt, laps):
         Integrates RD DE's forward in time on growing manifold defined by laps.
     '''
     from forward import step_se
-
-    # RD params
-    du = 1
-    dv = 10
-    g = 1000 # set to zero to just test diffusion
-    a = 0.126779*0.25
-    b = 1.1
 
     # initialize fields near steady-state solution
     u = np.ones(nx, dtype=float)*(a+b)

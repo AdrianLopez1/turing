@@ -6,6 +6,7 @@ def step_se(u, v, a, b, g, du, dv, lap, dx=1, nx=0, dt=0, nsteps=1):
     according to the system equations (SE). (Schnakenberg kinetics)
     """
     
+    
     for i in range(nsteps):
         # nonlinear reaction terms
         # for u: u(n)*u(n+1)*v(n)
