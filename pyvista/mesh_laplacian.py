@@ -38,6 +38,7 @@ def compute_mesh_laplacian(mesh):
 
     # Find vertex area
     cell_sizes = mesh.compute_cell_sizes()
+    
 
     vertex_area = np.zeros(mesh.n_points)
     for i in range(mesh.n_points):
