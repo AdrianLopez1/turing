@@ -112,13 +112,8 @@ def rd_forward(du, dv, g, a, b, nx, dx, niter, dt, laps, grow=False, output_file
             # reference calculated laplacians from growth loop
             if grow: 
                 # first apply dilution
-                area_current = mesh.area
-                mesh.points  = pts[:,:,i+1]
-                area_new     = mesh.area
-                dilution_factor = area_current / area_new
-                
-                u *= dilution_factor
-                
+                # ENDED UP JUST MAKING A NEW FUNCTION FOR THIS IN EXAMPLES.IPYNB
+     
                 # then RD
                 u, v = step_se(u,v, a,b,g,du,dv, laps[:,:,i], dx,nx,dt)
             else: u, v = step_se(u,v, a,b,g,du,dv, laps, dx,nx,dt)
@@ -134,10 +129,10 @@ def rd_forward(du, dv, g, a, b, nx, dx, niter, dt, laps, grow=False, output_file
     # note that this overwrites pts and laps
     # np.savez_compressed(output_file, u=u_stored, v=v_stored)
     
-    print("RD data written to {}.".format(output_file))
+    # print("RD data written to {}.".format(output_file))
     
     # reset mesh
-    if grow: mesh.points = pts[:,:,0]
+    # if grow: mesh.points = pts[:,:,0]
     
     
     return u_stored, v_stored
@@ -162,7 +157,7 @@ def plot_forward(params, mesh, u_stored, pts, niter, grow=False, mode='dynamic',
             p.add_mesh(mesh.copy().rotate_y(rot), scalars='u', cmap='gray', show_edges=False)
             p.link_views()
             p.view_isometric()
-            p.camera_position = 'xy'
+            p.camera_position = cpos
 
         plot_mesh(u_stored[:,0], 0)
 
