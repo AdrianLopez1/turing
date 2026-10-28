@@ -1,2 +1,5 @@
 *.npy
-
+*.npz
+pyvista/
+*data*
+*saved_outputs*
